@@ -68,3 +68,14 @@ def test_install_hook_uses_posix_paths(tmp_path):
     hook = tmp_path / ".git" / "hooks" / "prepare-commit-msg"
     content = hook.read_text(encoding="utf-8")
     assert "\\" not in content, f"Backslashes found in hook: {content!r}"
+
+
+def test_install_gitignore_whole_line_match(tmp_path):
+    """A gitignore containing a superset path must still add our exact entry."""
+    _git(["init"], tmp_path)
+    gi = tmp_path / ".gitignore"
+    # This contains our entry as a SUBSTRING but not as a whole line
+    gi.write_text("foo/.claude-office/.active\n", encoding="utf-8")
+    _run_install(tmp_path)
+    lines = gi.read_text(encoding="utf-8").splitlines()
+    assert ".claude-office/.active" in lines

@@ -26,7 +26,7 @@ def _ensure_gitignore(target: Path) -> None:
     gi = target / ".gitignore"
     line = ".claude-office/.active"
     existing = gi.read_text(encoding="utf-8") if gi.exists() else ""
-    if line not in existing:
+    if line not in existing.splitlines():
         with gi.open("a", encoding="utf-8") as fh:
             if existing and not existing.endswith("\n"):
                 fh.write("\n")
