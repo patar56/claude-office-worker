@@ -11,7 +11,9 @@ def signature_block(p: Persona) -> str:
         f"Co-Authored-By: {p.name} (Claude Office) "
         f"<office+{p.slug}@users.noreply.github.com>"
     )
-    emblem_line = f"— {p.name} {p.emblem} {p.role} · \"{p.catchphrase}\""
+    emblem_line = f"— {p.name} {p.emblem} {p.role}"
+    if p.catchphrase:
+        emblem_line += f" · \"{p.catchphrase}\""
     return f"{coauthor}\n{emblem_line}"
 
 

@@ -15,6 +15,16 @@ def test_signature_block_format():
     assert "— Vega ◆ Staff Reviewer · \"Measure twice, ship once.\"" in block
 
 
+def test_signature_block_omits_blank_catchphrase():
+    bare = Persona(
+        slug="mw", name="MW", role="Engineer", color="#3E7CB1",
+        emblem="■", catchphrase="", traits=[], on_call=False, voice="", boundaries="",
+    )
+    block = signature_block(bare)
+    assert block.rstrip().endswith("— MW ■ Engineer")
+    assert '"' not in block.split("\n")[1]
+
+
 def test_sign_message_appends_once():
     out = sign_message("Fix the bug", P)
     assert out.startswith("Fix the bug")

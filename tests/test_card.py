@@ -20,6 +20,17 @@ def test_card_contains_identity():
     assert "meticulous, calm" in md
 
 
+def test_card_omits_blank_catchphrase_and_traits():
+    bare = Persona(
+        slug="mw", name="MW", role="Engineer", color="#3E7CB1",
+        emblem="■", catchphrase="", traits=[], on_call=False, voice="", boundaries="",
+    )
+    md = render_card_markdown(bare)
+    assert '""' not in md
+    assert ">" not in md  # no empty blockquote line
+    assert md.rstrip().endswith("`#3E7CB1`")  # color, no dangling " · "
+
+
 def test_card_avatar_is_indented_code_block():
     md = render_card_markdown(P)
     # avatar rows are indented 4 spaces so they render as a code block
