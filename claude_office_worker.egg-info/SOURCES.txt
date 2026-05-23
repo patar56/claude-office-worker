@@ -1,0 +1,7 @@
+pyproject.toml
+claude_office_worker.egg-info/PKG-INFO
+claude_office_worker.egg-info/SOURCES.txt
+claude_office_worker.egg-info/dependency_links.txt
+claude_office_worker.egg-info/requires.txt
+claude_office_worker.egg-info/top_level.txt
+office/__init__.py

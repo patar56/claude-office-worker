@@ -1,0 +1,6 @@
+{
+  "name": "claude-office-worker",
+  "version": "0.1.0",
+  "description": "Give Claude a roster of named AI coworkers — each a tinted Claude avatar with a name, role, color, and voice.",
+  "author": { "name": "pjargento" }
+}
