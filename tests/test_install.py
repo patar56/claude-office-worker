@@ -44,3 +44,27 @@ def test_install_gitignores_active(tmp_path):
     _run_install(tmp_path)
     gitignore = (tmp_path / ".gitignore").read_text(encoding="utf-8")
     assert ".claude-office/.active" in gitignore
+
+
+def test_install_backs_up_existing_hook(tmp_path):
+    _git(["init"], tmp_path)
+    hooks_dir = tmp_path / ".git" / "hooks"
+    hooks_dir.mkdir(parents=True, exist_ok=True)
+    existing_content = "#!/bin/sh\necho custom\n"
+    hook = hooks_dir / "prepare-commit-msg"
+    hook.write_text(existing_content, encoding="utf-8")
+    _run_install(tmp_path)
+    # Backup should exist with original content
+    bak = hooks_dir / "prepare-commit-msg.bak"
+    assert bak.exists(), "prepare-commit-msg.bak was not created"
+    assert bak.read_text(encoding="utf-8") == existing_content
+    # New hook should contain our script
+    assert "sign_commit.py" in hook.read_text(encoding="utf-8")
+
+
+def test_install_hook_uses_posix_paths(tmp_path):
+    _git(["init"], tmp_path)
+    _run_install(tmp_path)
+    hook = tmp_path / ".git" / "hooks" / "prepare-commit-msg"
+    content = hook.read_text(encoding="utf-8")
+    assert "\\" not in content, f"Backslashes found in hook: {content!r}"

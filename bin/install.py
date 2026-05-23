@@ -38,8 +38,17 @@ def _install_hook(target: Path) -> None:
     if not hooks_dir.is_dir():
         return  # not a git repo (yet); skip silently
     hook = hooks_dir / "prepare-commit-msg"
+    if hook.exists():
+        existing = hook.read_text(encoding="utf-8")
+        if "claude-office-worker" not in existing:
+            bak = hooks_dir / "prepare-commit-msg.bak"
+            bak.write_text(existing, encoding="utf-8")
+            print(f"Notice: backed up existing prepare-commit-msg to {bak}")
     hook.write_text(
-        HOOK_TEMPLATE.format(python=sys.executable, sign_commit=SIGN_COMMIT),
+        HOOK_TEMPLATE.format(
+            python=Path(sys.executable).as_posix(),
+            sign_commit=SIGN_COMMIT.as_posix(),
+        ),
         encoding="utf-8",
     )
     hook.chmod(0o755)
