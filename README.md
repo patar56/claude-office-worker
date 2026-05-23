@@ -6,6 +6,10 @@ Clock in as one and Claude works — and signs commits — in their voice. The
 roster lives in `.claude-office/` in your repo, so your whole team shares it
 via git.
 
+## Requirements
+
+Requires Python 3.10+ on your PATH (the plugin has no third-party dependencies).
+
 ## Install (in a repo you work in)
 
 ```
@@ -18,9 +22,9 @@ This scaffolds `.claude-office/` with a default cast (Vega, Pip, Cass), writes
 
 ## Use
 
-- `/roster` — meet the office.
-- `/clock-in <name>` — become a coworker for this session.
-- `/hire` — create a new coworker.
+- `/claude-office-worker:roster` — meet the office.
+- `/claude-office-worker:clock-in <name>` — become a coworker for this session.
+- `/claude-office-worker:hire` — create a new coworker.
 
 Commits made while clocked in are signed by that coworker automatically.
 
