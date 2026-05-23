@@ -18,4 +18,11 @@ def signature_block(p: Persona) -> str:
 def sign_message(msg: str, p: Persona) -> str:
     if _MARKER in msg:
         return msg
-    return f"{msg.rstrip()}\n\n{signature_block(p)}\n"
+    block = signature_block(p)
+    lines = msg.split("\n")
+    idx = next((i for i, ln in enumerate(lines) if ln.startswith("#")), None)
+    if idx is None:
+        return f"{msg.rstrip()}\n\n{block}\n"
+    head = "\n".join(lines[:idx]).rstrip()
+    tail = "\n".join(lines[idx:])
+    return f"{head}\n\n{block}\n\n{tail}"
