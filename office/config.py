@@ -30,7 +30,10 @@ def load_office_config(office_dir) -> dict:
     path = Path(office_dir) / _CONFIG_NAME
     if not path.exists():
         return {"palette": list(DEFAULT_PALETTE)}
-    return json.loads(path.read_text(encoding="utf-8"))
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {"palette": list(DEFAULT_PALETTE)}
 
 
 def save_office_config(office_dir, cfg: dict) -> None:

@@ -66,3 +66,11 @@ def test_next_color_skips_used():
     cfg = {"palette": ["#111111", "#222222", "#333333"]}
     assert next_color(cfg, used=["#111111"]) == "#222222"
     assert next_color(cfg, used=["#111111", "#222222", "#333333"]) == "#111111"
+
+
+def test_load_office_config_corrupt_json(tmp_path):
+    d = tmp_path / OFFICE_DIRNAME
+    d.mkdir()
+    (d / "office.json").write_text("{not json", encoding="utf-8")
+    cfg = load_office_config(d)
+    assert cfg["palette"] == list(DEFAULT_PALETTE)
