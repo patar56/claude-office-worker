@@ -58,3 +58,51 @@ def test_bad_color_raises():
     bad = SAMPLE.replace('"#C9A227"', '"gold"')
     with pytest.raises(PersonaError):
         parse_persona(bad)
+
+
+SAMPLE_DASHES_IN_VALUE = """---
+name: Vega
+role: Staff Reviewer
+color: "#C9A227"
+emblem: "◆"
+catchphrase: "ship it: a --- b"
+traits: [meticulous, calm]
+on_call: false
+---
+
+## Voice
+Speaks plainly.
+
+## Boundaries
+Won't rubber-stamp.
+"""
+
+SAMPLE_DASHES_IN_BODY = """---
+name: Vega
+role: Staff Reviewer
+color: "#C9A227"
+emblem: "◆"
+catchphrase: "Measure twice, ship once."
+traits: [meticulous, calm]
+on_call: false
+---
+
+## Voice
+Speaks plainly.
+
+---
+
+## Boundaries
+Won't rubber-stamp.
+"""
+
+
+def test_catchphrase_with_dashes_and_colon():
+    p = parse_persona(SAMPLE_DASHES_IN_VALUE)
+    assert p.catchphrase == "ship it: a --- b"
+
+
+def test_body_with_horizontal_rule():
+    p = parse_persona(SAMPLE_DASHES_IN_BODY)
+    assert p.name == "Vega"
+    assert p.catchphrase == "Measure twice, ship once."

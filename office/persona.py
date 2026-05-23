@@ -5,8 +5,6 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-import yaml
-
 _COLOR_RE = re.compile(r"^#[0-9A-Fa-f]{6}$")
 _REQUIRED = ("name", "role", "color", "emblem", "catchphrase", "traits")
 
@@ -40,16 +38,48 @@ def _section(body: str, title: str) -> str:
     return m.group(1).strip() if m else ""
 
 
+def _unquote(s: str) -> str:
+    if len(s) >= 2 and s[0] == s[-1] and s[0] in "\"'":
+        return s[1:-1]
+    return s
+
+
+def _parse_value(value: str):
+    if value.startswith("[") and value.endswith("]"):
+        inner = value[1:-1].strip()
+        if not inner:
+            return []
+        return [_unquote(v.strip()) for v in inner.split(",")]
+    low = value.lower()
+    if low == "true":
+        return True
+    if low == "false":
+        return False
+    return _unquote(value)
+
+
+def _parse_frontmatter(fm_lines: list[str]) -> dict:
+    data: dict = {}
+    for raw in fm_lines:
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if ":" not in line:
+            raise PersonaError(f"invalid frontmatter line: {raw!r}")
+        key, _, value = line.partition(":")
+        data[key.strip()] = _parse_value(value.strip())
+    return data
+
+
 def parse_persona(text: str, slug: str | None = None) -> Persona:
-    if not text.lstrip().startswith("---"):
+    lines = text.splitlines()
+    if not lines or lines[0].strip() != "---":
         raise PersonaError("persona file is missing YAML frontmatter")
-    parts = text.split("---", 2)
-    if len(parts) < 3:
+    end = next((i for i in range(1, len(lines)) if lines[i].strip() == "---"), None)
+    if end is None:
         raise PersonaError("persona frontmatter is not terminated by '---'")
-    try:
-        fm = yaml.safe_load(parts[1]) or {}
-    except yaml.YAMLError as exc:
-        raise PersonaError(f"invalid YAML frontmatter: {exc}") from exc
+    fm = _parse_frontmatter(lines[1:end])
+    body = "\n".join(lines[end + 1:])
     for key in _REQUIRED:
         if key not in fm:
             raise PersonaError(f"persona is missing required field: {key}")
@@ -59,7 +89,6 @@ def parse_persona(text: str, slug: str | None = None) -> Persona:
     traits = fm["traits"]
     if not isinstance(traits, list):
         raise PersonaError("traits must be a list")
-    body = parts[2]
     return Persona(
         slug=slug or slugify(str(fm["name"])),
         name=str(fm["name"]),
