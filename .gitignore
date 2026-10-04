@@ -3,3 +3,5 @@ __pycache__/
 .pytest_cache/
 .venv/
 .claude-office/.active
+site/node_modules/
+site/dist/
