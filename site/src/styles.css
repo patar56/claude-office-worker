@@ -24,7 +24,7 @@ body { margin: 0; background: var(--paper); }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button, input, textarea { font: inherit; color: inherit; }
-h1, h2, h3, blockquote { font-family: var(--serif); font-weight: 400; letter-spacing: -0.03em; line-height: 0.96; margin: 0; }
+h1, h2, h3, blockquote { font-family: var(--serif); font-weight: 400; letter-spacing: -0.03em; line-height: 0.96; margin: 0; overflow-wrap: break-word; }
 h1 { font-size: clamp(3.4rem, 6.4vw, 6.6rem); }
 h2 { font-size: clamp(2.4rem, 4.4vw, 4.4rem); }
 h3 { font-size: 1.7rem; line-height: 1.15; }
@@ -294,8 +294,8 @@ em { font-style: italic; }
 .colophon-line { margin-top: 8px; }
 
 .interior { padding-top: 10vh; }
-.page-head { max-width: 18em; padding-bottom: 8vh; }
-.page-head h1 { margin-bottom: 22px; }
+.page-head { max-width: 46rem; padding-bottom: 8vh; }
+.page-head h1 { max-width: 12ch; margin-bottom: 22px; }
 .page-head .lede { max-width: 38rem; }
 
 .catalogue {
@@ -312,7 +312,7 @@ em { font-style: italic; }
 .catalogue p { color: var(--muted); }
 .catalogue dl { display: grid; gap: 14px; margin: 8px 0; }
 .catalogue dt { font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
-.catalogue dd { margin: 4px 0 0; font-family: var(--serif); font-size: 1.6rem; }
+.catalogue dd { margin: 4px 0 0; font-family: var(--serif); font-size: 1.45rem; line-height: 1.25; }
 .strip { display: grid; grid-template-columns: 1.3fr 0.8fr 0.9fr; gap: 12px; padding: 0 7vw 12vh; }
 .strip img { height: 52vh; object-fit: cover; background: var(--paper-2); }
 
@@ -429,8 +429,13 @@ legend { letter-spacing: 0.16em; text-transform: uppercase; font-size: 0.7rem; m
   to { opacity: 1; }
 }
 
+@media (max-width: 1100px) {
+  .chapters, .manifesto-grid, .colophon, .feature, .close, .catalogue { grid-template-columns: 1fr; }
+  .spec-row { grid-template-columns: 1fr 1fr; }
+}
+
 @media (max-width: 980px) {
-  .hero, .feature, .close, .catalogue, .watch-layout, .about-lead, .about-split, .ask, .contact-grid, .manifesto-grid, .chapters, .colophon {
+  .hero, .feature, .close, .catalogue, .watch-layout, .about-lead, .about-split, .ask, .contact-grid, .manifesto-grid, .chapters, .colophon, .spec-table dl div {
     grid-template-columns: 1fr;
   }
   .chapters { gap: 28px; }
